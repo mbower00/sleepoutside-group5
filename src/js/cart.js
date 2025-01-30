@@ -1,8 +1,24 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
+  let cartItems = getLocalStorage("so-cart");
+  if (cartItems === null) {
+    cartItems = [];
+    setLocalStorage("so-cart", cartItems);
+  }
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+
+  if (cartItems.length > 0) {
+    document.querySelector(".cart-footer").classList.remove("hide");
+    // using code from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+    const total = cartItems.reduce(
+      (growingTotal, item) => growingTotal + item.FinalPrice,
+      0
+    );
+    const html = `$${total}`;
+    document.querySelector(".cart-total").innerHTML += html;
+  }
+
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 }
 
