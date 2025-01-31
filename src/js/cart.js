@@ -18,13 +18,13 @@ function renderCartContents() {
     const html = `Total: $${total}`;
     document.querySelector(".cart-total").innerHTML = html;
   } else {
-    document.querySelector(".cart-footer").classList.add("hide")
+    document.querySelector(".cart-footer").classList.add("hide");
   }
 
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
   document.querySelectorAll(".cart-card-remove").forEach((element) => {
-    element.addEventListener("click", removeFromCartHandler)
-  })
+    element.addEventListener("click", removeFromCartHandler);
+  });
 }
 
 function cartItemTemplate(item) {
@@ -48,29 +48,29 @@ function cartItemTemplate(item) {
 }
 
 function removeFromCart(id) {
-  let cart = getLocalStorage("so-cart")
+  let cart = getLocalStorage("so-cart");
   if (cart === null) {
-    cart = []
+    cart = [];
   }
-  let removed = false
+  let removed = false;
   cart = cart.filter((item) => {
-    if (item.Id === id && !removed){
-      removed = true
-      return false
+    if (item.Id === id && !removed) {
+      removed = true;
+      return false;
     } else {
-      return true
+      return true;
     }
-  })
-  setLocalStorage("so-cart", cart)
-  renderCartContents()
+  });
+  setLocalStorage("so-cart", cart);
+  renderCartContents();
 }
 
 function removeFromCartHandler(event) {
   // using code from:
   // - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
   // - https://developer.mozilla.org/en-US/docs/Web/API/Event
-  const id = event.target.dataset.id
-  removeFromCart(id)
+  const id = event.target.dataset.id;
+  removeFromCart(id);
 }
 
 renderCartContents();
