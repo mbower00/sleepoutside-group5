@@ -28,3 +28,10 @@ export function getParam(param = "product") {
   const value = urlParams.get(param);
   return value
 }
+export function updateCartNumber(){
+  let cart = getLocalStorage("so-cart")
+  if (cart === null) {
+    cart = []
+  }
+  document.querySelector(".cart-number").innerHTML = cart.length
+}
