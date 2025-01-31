@@ -15,7 +15,7 @@ function renderCartContents() {
       (growingTotal, item) => growingTotal + item.FinalPrice,
       0
     );
-    const html = `$${total}`;
+    const html = ` $${total}`;
     document.querySelector(".cart-total").innerHTML += html;
   }
 
