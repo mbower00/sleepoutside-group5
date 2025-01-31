@@ -1,5 +1,5 @@
 import {findProductById} from  "./productData.mjs";
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, updateCartNumber } from "./utils.mjs";
 
 export default async function productDetails(productId, selector) {
   // use findProductById to get the details for the current product. findProductById will return a promise! use await or .then() to process it
@@ -16,6 +16,7 @@ export default async function productDetails(productId, selector) {
 async function addToCartHandler(e) {
   const product = await findProductById(e.target.dataset.id);
   addProductToCart(product);
+  updateCartNumber()
   // using code from: 
   // - https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
   // - https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats
