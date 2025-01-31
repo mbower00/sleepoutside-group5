@@ -15,8 +15,33 @@ export default async function productDetails(productId, selector) {
 // add to cart button event handler
 async function addToCartHandler(e) {
   const product = await findProductById(e.target.dataset.id);
-  console.log(product)
   addProductToCart(product);
+  // using code from: 
+  // - https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
+  // - https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats
+  const baseConfig = {
+    position: "fixed",
+    right: "47.5%",
+    backgroundColor: "white",
+    padding: "10px 12px 8px 12px",
+    marginTop: "15px",
+    borderRadius: "100%",
+    boxShadow: "#333 2px 2px 5px"
+  }
+  document.querySelector(".cart").animate([
+    {
+      ...baseConfig,
+      transform: "rotate(0deg)",
+    },
+    {
+      ...baseConfig,
+      transform: "rotate(30deg)"
+    },
+    {
+      ...baseConfig,
+      transform: "rotate(0deg)"
+    }
+  ], 250)
 }
 
 function addProductToCart(product) {
@@ -31,7 +56,6 @@ function addProductToCart(product) {
 }
 
 function productDetailsTemplate(product) {
-  console.log(product)
   return `
     <h3>${product.Brand.Name}</h3>
 
