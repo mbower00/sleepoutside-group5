@@ -15,15 +15,21 @@ function renderCartContents() {
       (growingTotal, item) => growingTotal + item.FinalPrice,
       0
     );
-    const html = ` $${total}`;
-    document.querySelector(".cart-total").innerHTML += html;
+    const html = `Total: $${total}`;
+    document.querySelector(".cart-total").innerHTML = html;
+  } else {
+    document.querySelector(".cart-footer").classList.add("hide");
   }
 
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
+  document.querySelectorAll(".cart-card-remove").forEach((element) => {
+    element.addEventListener("click", removeFromCartHandler);
+  });
 }
 
 function cartItemTemplate(item) {
   const newItem = `<li class="cart-card divider">
+  <span class="cart-card-remove" data-id="${item.Id}">X</span>
   <a href="#" class="cart-card__image">
     <img
       src="${item.Image}"
@@ -39,6 +45,32 @@ function cartItemTemplate(item) {
 </li>`;
 
   return newItem;
+}
+
+function removeFromCart(id) {
+  let cart = getLocalStorage("so-cart");
+  if (cart === null) {
+    cart = [];
+  }
+  let removed = false;
+  cart = cart.filter((item) => {
+    if (item.Id === id && !removed) {
+      removed = true;
+      return false;
+    } else {
+      return true;
+    }
+  });
+  setLocalStorage("so-cart", cart);
+  renderCartContents();
+}
+
+function removeFromCartHandler(event) {
+  // using code from:
+  // - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+  // - https://developer.mozilla.org/en-US/docs/Web/API/Event
+  const id = event.target.dataset.id;
+  removeFromCart(id);
 }
 
 renderCartContents();

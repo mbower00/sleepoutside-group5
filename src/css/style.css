@@ -120,7 +120,6 @@ button {
   }
 }
 
-
 .cart svg {
   width: 25px;
 }
@@ -191,6 +190,14 @@ button {
   font-size: var(--small-font);
   /* max-height: 120px; */
   align-items: center;
+  position: relative;
+}
+
+.cart-card-remove {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
 }
 
 .cart-card__image {

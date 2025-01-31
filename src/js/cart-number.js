@@ -1,2 +1,2 @@
-import {updateCartNumber} from "./utils.mjs"
-updateCartNumber()
+import { updateCartNumber } from "./utils.mjs";
+updateCartNumber();
