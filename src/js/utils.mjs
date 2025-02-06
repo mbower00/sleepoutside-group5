@@ -1,3 +1,7 @@
+import { mount } from "svelte";
+import MainHeader from "./components/MainHeader.svelte"
+import MainFooter from "./components/MainFooter.svelte"
+
 // wrapper for querySelector...returns matching element
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
@@ -34,4 +38,26 @@ export function updateCartNumber(){
     cart = []
   }
   document.querySelector(".cart-number").innerHTML = cart.length
+}
+
+
+export function renderHeaderFooter(){
+
+  // Render Header
+  const mainHeader = mount(MainHeader, {
+    target: document.querySelector("#main-header"),
+    props: {
+      cartCount: getCartNumber()
+    }
+  });
+ 
+ // Render Footer 
+  const mainFooter = mount(MainFooter, {
+    target: document.querySelector("#main-footer")
+  });
+}
+
+export function getCartNumber(){
+  const cart = getLocalStorage("so-cart")
+  return cart?.length || 0
 }
