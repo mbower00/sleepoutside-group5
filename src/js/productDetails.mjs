@@ -42,7 +42,7 @@ async function addToCartHandler(e) {
       ...baseConfig,
       transform: "rotate(0deg)"
     }
-  ], 250)
+  ], 350)
 }
 
 function addProductToCart(product) {
