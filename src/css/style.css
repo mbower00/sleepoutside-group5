@@ -112,6 +112,7 @@ button {
 }
 .cart .cart-number {
   background-color: #f0a868;
+  color: white;
   position: absolute;
   right: -3px;
   top: -16px;

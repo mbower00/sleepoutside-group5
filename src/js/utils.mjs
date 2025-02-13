@@ -1,6 +1,7 @@
 import { mount } from "svelte";
 import MainHeader from "./components/MainHeader.svelte"
 import MainFooter from "./components/MainFooter.svelte"
+import { cartState } from "./components/state.svelte";
 
 // wrapper for querySelector...returns matching element
 export function qs(selector, parent = document) {
@@ -33,11 +34,7 @@ export function getParam(param = "product") {
   return value
 }
 export function updateCartNumber(){
-  let cart = getLocalStorage("so-cart")
-  if (cart === null) {
-    cart = []
-  }
-  document.querySelector(".cart-number").innerHTML = cart.length
+  cartState.count = getCartNumber()
 }
 
 

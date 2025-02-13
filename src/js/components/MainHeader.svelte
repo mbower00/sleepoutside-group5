@@ -1,5 +1,5 @@
 <script>
-  let { cartCount } = $props();
+  import { cartState } from "./state.svelte.js";
 </script>
 
 <div class="logo">
@@ -32,6 +32,8 @@
       <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
     </svg>
     <!-- using code from https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup -->
-    <sup class="cart-number">{cartCount}</sup>
+    {#if cartState.count}
+      <sup class="cart-number">{cartState.count}</sup>
+    {/if}
   </a>
 </div>
