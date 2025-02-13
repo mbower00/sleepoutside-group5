@@ -1,9 +1,9 @@
-import {renderHeaderFooter} from "./utils.mjs"
-import ShoppingCart from "./components/ShoppingCart.svelte"
-import { mount } from "svelte"
+import { renderHeaderFooter } from "./utils.mjs";
+import ShoppingCart from "./components/ShoppingCart.svelte";
+import { mount } from "svelte";
 
-renderHeaderFooter()
+renderHeaderFooter();
 
 const shoppingCart = mount(ShoppingCart, {
-  target: document.querySelector(".product-list")
-})
+  target: document.querySelector(".product-list"),
+});
