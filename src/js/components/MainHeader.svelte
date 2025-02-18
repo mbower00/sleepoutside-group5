@@ -1,5 +1,14 @@
 <script>
   import { cartState } from "./state.svelte.js";
+  import {getLocalStorage, setLocalStorage} from "../utils.mjs"
+  import RegisterModal from "./RegisterBanner.svelte";
+  import { mount } from "svelte";
+  
+  const hasVisited = getLocalStorage("so-visited")
+  if (!hasVisited) {
+    const registerModal = mount(RegisterModal, {target: document.querySelector("body"), anchor: document.querySelector("main")})
+    setLocalStorage("so-visited", true)
+  }
 </script>
 
 <div class="logo">
@@ -37,3 +46,4 @@
     {/if}
   </a>
 </div>
+
