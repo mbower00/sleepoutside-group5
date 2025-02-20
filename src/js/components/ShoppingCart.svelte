@@ -29,7 +29,7 @@
   }
 
   $: total = cartItems
-    .reduce((sum, item) => sum + item.FinalPrice, 0)
+    .reduce((sum, item) => sum + (item.FinalPrice * (item.qty || 1)), 0)
     .toFixed(2);
 
   onMount(loadCart);
@@ -86,6 +86,9 @@
     </ul>
     <div class="cart-footer">
       <p class="cart-total">Total: ${total}</p>
+      <a href="../checkout/index.html">
+        <button >Checkout</button>
+      </a>
     </div>
   {/if}
 </div>
