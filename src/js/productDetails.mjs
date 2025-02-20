@@ -42,7 +42,7 @@ async function addToCartHandler(e) {
       ...baseConfig,
       transform: "rotate(0deg)"
     }
-  ], 250)
+  ], 350)
 }
 
 function addProductToCart(product) {
@@ -57,21 +57,22 @@ function addProductToCart(product) {
 }
 
 function productDetailsTemplate(product) {
+  const discount = product.SuggestedRetailPrice > product.FinalPrice
+    ? Math.round(((product.SuggestedRetailPrice - product.FinalPrice) / product.SuggestedRetailPrice) * 100)
+    : null;
+
   return `
     <h3>${product.Brand.Name}</h3>
-
     <h2 class="divider">${product.NameWithoutBrand}</h2>
+    <img class="divider" src="${product.Image}" alt="${product.NameWithoutBrand}" />
 
-    <img
-      class="divider"
-      src="${product.Image}"
-      alt="${product.NameWithoutBrand}"
-    />
-
-    <p class="product-card__price">${product.FinalPrice}</p>
+    <p class="product-card__price">
+      ${discount ? `<span style="color: red; font-weight: bold;">-${discount}%</span>` : ""}
+      <span style="font-weight: bold; color: green;">$${product.FinalPrice}</span>
+      ${discount ? `<span style="text-decoration: line-through; color: gray; margin-left: 10px;">$${product.SuggestedRetailPrice}</span>` : ""}
+    </p>
 
     <p class="product__color">${product.Colors[0].ColorName}</p>
-
     <p class="product__description">${product.DescriptionHtmlSimple}</p>
 
     <div class="product-detail__add">
