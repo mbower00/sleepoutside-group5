@@ -58,3 +58,38 @@ export function getCartNumber(){
   const cart = getLocalStorage("so-cart")
   return cart?.length || 0
 }
+
+// Get wishlist from localStorage
+export function getWishlist() {
+  return JSON.parse(localStorage.getItem("so-wishlist")) || [];
+}
+
+// Save wishlist to localStorage
+export function setWishlist(wishlist) {
+  localStorage.setItem("so-wishlist", JSON.stringify(wishlist));
+}
+
+// Add product to wishlist
+export function addToWishlist(product) {
+  const wishlist = getWishlist();
+  if (!wishlist.some((item) => item.Id === product.Id)) {
+    wishlist.push(product);
+    setWishlist(wishlist);
+  }
+}
+
+// Remove product from wishlist
+export function removeFromWishlist(productId) {
+  const wishlist = getWishlist().filter((item) => item.Id !== productId);
+  setWishlist(wishlist);
+}
+
+// Check if product is in wishlist
+export function isInWishlist(productId) {
+  return getWishlist().some((item) => item.Id === productId);
+}
+
+// Get wishlist count
+export function getWishlistCount() {
+  return getWishlist().length;
+}

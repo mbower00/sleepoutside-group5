@@ -1,22 +1,40 @@
-import {findProductById} from  "./productData.mjs";
-import { getLocalStorage, setLocalStorage, updateCartNumber } from "./utils.mjs";
+import { findProductById } from "./productData.mjs";
+import { getLocalStorage, setLocalStorage, updateCartNumber, addToWishlist, removeFromWishlist, isInWishlist } from "./utils.mjs";
 
 export default async function productDetails(productId, selector) {
   // use findProductById to get the details for the current product. findProductById will return a promise! use await or .then() to process it
   let productData = await findProductById(productId);
+
   // once we have the product details we can render out the HTML
-  document.querySelector(".product-detail").innerHTML = productDetailsTemplate(productData)
+  document.querySelector(".product-detail").innerHTML = productDetailsTemplate(productData);
+
   // add a listener to Add to Cart button
   document
     .getElementById("addToCart")
     .addEventListener("click", addToCartHandler);
+
+  // 🆕 Add listener to Wishlist button
+  const wishlistButton = document.getElementById("wishlistButton");
+  wishlistButton.addEventListener("click", () => {
+    if (isInWishlist(productData.Id)) {
+      removeFromWishlist(productData.Id);
+      wishlistButton.textContent = "Add to Wishlist";
+    } else {
+      addToWishlist(productData);
+      wishlistButton.textContent = "Remove from Wishlist";
+    }
+  });
+
+  // 🆕 Set initial wishlist button text
+  wishlistButton.textContent = isInWishlist(productData.Id) ? "Remove from Wishlist" : "Add to Wishlist";
 }
 
 // add to cart button event handler
 async function addToCartHandler(e) {
   const product = await findProductById(e.target.dataset.id);
   addProductToCart(product);
-  updateCartNumber()
+  updateCartNumber();
+
   // using code from: 
   // - https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
   // - https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats
@@ -28,31 +46,21 @@ async function addToCartHandler(e) {
     marginTop: "15px",
     borderRadius: "100%",
     boxShadow: "#333 2px 2px 5px"
-  }
+  };
+  
   document.querySelector(".cart").animate([
-    {
-      ...baseConfig,
-      transform: "rotate(0deg)",
-    },
-    {
-      ...baseConfig,
-      transform: "rotate(30deg)"
-    },
-    {
-      ...baseConfig,
-      transform: "rotate(0deg)"
-    }
-  ], 350)
+    { ...baseConfig, transform: "rotate(0deg)" },
+    { ...baseConfig, transform: "rotate(30deg)" },
+    { ...baseConfig, transform: "rotate(0deg)" }
+  ], 350);
 }
 
 function addProductToCart(product) {
-  let cartList = getLocalStorage("so-cart")
-  if (cartList === null){
-    cartList = []
-  } else if (!Array.isArray(cartList)){
-    cartList = []
+  let cartList = getLocalStorage("so-cart");
+  if (cartList === null || !Array.isArray(cartList)) {
+    cartList = [];
   }
-  cartList.push(product)
+  cartList.push(product);
   setLocalStorage("so-cart", cartList);
 }
 
@@ -77,6 +85,8 @@ function productDetailsTemplate(product) {
 
     <div class="product-detail__add">
       <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+      <!-- 🆕 Wishlist Button -->
+      <button id="wishlistButton"></button>
     </div>
   `;
 }
