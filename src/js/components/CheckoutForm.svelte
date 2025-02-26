@@ -1,7 +1,7 @@
 <script>
-  import {getLocalStorage} from "../utils.mjs"
+  import { getLocalStorage } from "../utils.mjs";
 
-  let {cartKey} = $props()
+  let { cartKey } = $props();
 
   let firstName = $state("");
   let lastName = $state("");
@@ -13,9 +13,9 @@
   let expiration = $state("");
   let securityCode = $state("");
 
-  let cart = $state([])
-  let count = $state(0)
-  let subtotal = $state(0)
+  let cart = $state([]);
+  let count = $state(0);
+  let subtotal = $state(0);
   let estimate = $state(0);
   let tax = $state(0);
   let total = $state(0);
@@ -27,20 +27,21 @@
 
   function calculateItemSummary() {
     return cart
-    .reduce((sum, item) => sum + (item.FinalPrice * (item.qty || 1)), 0)
-    .toFixed(2)
+      .reduce((sum, item) => sum + item.FinalPrice * (item.Qty || 1), 0)
+      .toFixed(2);
   }
   function calculateShippingTaxTotal() {
     // TODO: write this function and call it when zip is added
-    return
+    return;
   }
   function init() {
-    let cart = getLocalStorage(cartKey)
-    count = cart.reduce((sum, item) => sum + (1 * (item.qty || 1)), 0)
-    subtotal = calculateItemSummary()
+    console.log(cartKey);
+    let cart = getLocalStorage(cartKey);
+    count = cart.reduce((sum, item) => sum + 1 * (item.Qty || 1), 0);
+    subtotal = calculateItemSummary();
   }
 
-  init()
+  init();
 </script>
 
 <form onsubmit={submitForm}>
@@ -48,7 +49,12 @@
   <fieldset>
     <legend>Shipping</legend>
     <label for="first-name"> First Name </label>
-    <input type="text" id="first-name" name="first-name" bind:value={firstName} />
+    <input
+      type="text"
+      id="first-name"
+      name="first-name"
+      bind:value={firstName}
+    />
 
     <label for="last-name"> Last Name </label>
     <input type="text" id="last-name" name="last-name" bind:value={lastName} />
@@ -70,19 +76,36 @@
   <fieldset>
     <legend> Payment </legend>
     <label for="card-number"> Card Number </label>
-    <input type="text" id="card-number" name="card-number" bind:value={cardNumber} />
+    <input
+      type="text"
+      id="card-number"
+      name="card-number"
+      bind:value={cardNumber}
+    />
 
     <label for="expiration"> Expiration </label>
-    <input type="text" id="expiration" name="expiration" bind:value={expiration} />
+    <input
+      type="text"
+      id="expiration"
+      name="expiration"
+      bind:value={expiration}
+    />
 
     <label for="security-code"> Security Code </label>
-    <input type="text" id="security-code" name="security-code" bind:value={securityCode} />
+    <input
+      type="text"
+      id="security-code"
+      name="security-code"
+      bind:value={securityCode}
+    />
   </fieldset>
 
   <!-- summary -->
   <fieldset>
     <legend>Order Summary</legend>
-    <p>Item Subtotal({count}) <span class="summary-number">${subtotal}</span></p>
+    <p>
+      Item Subtotal({count}) <span class="summary-number">${subtotal}</span>
+    </p>
     <p>Shipping Estimate <span class="summary-number">${estimate}</span></p>
     <p>Tax <span class="summary-number">${tax}</span></p>
     <strong>
