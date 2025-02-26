@@ -1,7 +1,11 @@
-import { getParam } from "./utils.mjs";
-import productDetails from "./productDetails.mjs";
-import { renderHeaderFooter } from "./utils.mjs";
+import { getParam, renderHeaderFooter } from "./utils.mjs";
+import { mount } from "svelte";
+import ProductDetails from "./components/ProductDetails.svelte";
 
 renderHeaderFooter();
-const productId = getParam("product");
-productDetails(productId, ".product-detail");
+const productDetails = mount(ProductDetails, {
+  target: document.querySelector(".product-detail"),
+  props: {
+    productId: getParam("product"),
+  },
+});
