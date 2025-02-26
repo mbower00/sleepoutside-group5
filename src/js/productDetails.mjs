@@ -60,7 +60,16 @@ function addProductToCart(product) {
   if (cartList === null || !Array.isArray(cartList)) {
     cartList = [];
   }
-  cartList.push(product);
+  // using code from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+  const itemIndex = cartList.findIndex((item) => item.Id === product.Id)
+  if (itemIndex >= 0) {
+    // item found in cart
+    cartList[itemIndex].Qty += 1
+  } else {
+    // new item
+    product.Qty = 1
+    cartList.push(product);
+  }
   setLocalStorage("so-cart", cartList);
 }
 

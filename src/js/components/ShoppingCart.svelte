@@ -28,8 +28,15 @@
     updateCartNumber();
   }
 
+  function changeQty(itemIndex, changeBy) {
+    let cart = getLocalStorage("so-cart") || [];
+    cart[itemIndex].Qty += changeBy;
+    setLocalStorage("so-cart", cart);
+    cartItems = cart;
+  }
+
   $: total = cartItems
-    .reduce((sum, item) => sum + (item.FinalPrice * (item.qty || 1)), 0)
+    .reduce((sum, item) => sum + item.FinalPrice * (item.Qty || 1), 0)
     .toFixed(2);
 
   onMount(loadCart);
@@ -40,7 +47,7 @@
     <p class="empty-cart">Your cart is empty.</p>
   {:else}
     <ul class="product-list">
-      {#each cartItems as item}
+      {#each cartItems as item, index}
         <li class="cart-card divider">
           <span class="cart-card-remove" onclick={() => removeFromCart(item.Id)}
             >X</span
@@ -55,7 +62,27 @@
             <h2 class="card__name">{item.Name}</h2>
           </a>
           <p class="cart-card__color">{item.Colors[0].ColorName}</p>
-          <p class="cart-card__quantity">qty: 1</p>
+
+          <p class="cart-card__quantity">
+            qty: {item.Qty}
+            <span class="cart-card-quantity-buttons-container">
+              {#if item.Qty > 1}
+                <button
+                  class="cart-card-quantity-button"
+                  onclick={() => {
+                    changeQty(index, -1);
+                  }}>-</button
+                >
+              {/if}
+              <button
+                class="cart-card-quantity-button"
+                onclick={() => {
+                  changeQty(index, 1);
+                }}>+</button
+              >
+            </span>
+          </p>
+
           {#if item.SuggestedRetailPrice > item.FinalPrice}
             <p class="cart-card__price">
               <span
@@ -87,7 +114,7 @@
     <div class="cart-footer">
       <p class="cart-total">Total: ${total}</p>
       <a href="../checkout/index.html">
-        <button >Checkout</button>
+        <button>Checkout</button>
       </a>
     </div>
   {/if}
@@ -98,5 +125,16 @@
     text-align: center;
     font-size: 1.2em;
     color: gray;
+  }
+  .cart-card-quantity-buttons-container {
+    display: flex;
+    margin-top: 5px;
+    gap: 5px;
+  }
+  .cart-card-quantity-button {
+    padding: 5px;
+    margin: 0;
+    line-height: 13px;
+    font-family: monospace;
   }
 </style>
