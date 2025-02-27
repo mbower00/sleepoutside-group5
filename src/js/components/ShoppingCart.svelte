@@ -12,11 +12,15 @@
     cartItems = getLocalStorage("so-cart") || [];
   }
 
-  function removeFromCart(id) {
+  function removeFromCart(id, colorIndex) {
     let cart = getLocalStorage("so-cart") || [];
     let removed = false;
     cart = cart.filter((item) => {
-      if (item.Id === id && !removed) {
+      if (
+        item.Id === id &&
+        item.SelectedColorIndex === colorIndex &&
+        !removed
+      ) {
         removed = true;
         return false;
       }
@@ -49,19 +53,28 @@
     <ul class="product-list">
       {#each cartItems as item, index}
         <li class="cart-card divider">
-          <span class="cart-card-remove" onclick={() => removeFromCart(item.Id)}
+          <span
+            class="cart-card-remove"
+            onclick={() => removeFromCart(item.Id, item.SelectedColorIndex)}
             >X</span
           >
           <a
-            href="/product_pages/index.html?product={item.Id}"
+            href="/product_pages/index.html?product={item.Id}&colorIndex={item.SelectedColorIndex}"
             class="cart-card__image"
           >
-            <img src={item.Images.PrimaryMedium} alt={item.Name} />
+            <img
+              src={item.Colors[item.SelectedColorIndex].ColorPreviewImageSrc}
+              alt={item.Name}
+            />
           </a>
-          <a href="/product_pages/index.html?product={item.Id}">
+          <a
+            href="/product_pages/index.html?product={item.Id}&colorIndex={item.SelectedColorIndex}"
+          >
             <h2 class="card__name">{item.Name}</h2>
           </a>
-          <p class="cart-card__color">{item.Colors[0].ColorName}</p>
+          <p class="cart-card__color">
+            {item.Colors[item.SelectedColorIndex].ColorName}
+          </p>
 
           <p class="cart-card__quantity">
             qty: {item.Qty}

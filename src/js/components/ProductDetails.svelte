@@ -9,9 +9,10 @@
     isInWishlist,
   } from "../utils.mjs";
 
-  let { productId } = $props();
+  let { productId, colorIndex } = $props();
 
   let discount = $state(0);
+  let selectedColorIndex = $state(Number(colorIndex || 0));
   let productPromise = findProductById(productId).then((productData) => {
     discount = calculateDiscount(productData);
     return productData;
@@ -72,16 +73,25 @@
       cartList = [];
     }
     // using code from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
-    const itemIndex = cartList.findIndex((item) => item.Id === product.Id);
+    const itemIndex = cartList.findIndex(
+      (item) =>
+        item.Id === product.Id &&
+        item.SelectedColorIndex === selectedColorIndex,
+    );
     if (itemIndex >= 0) {
       // item found in cart
       cartList[itemIndex].Qty += 1;
     } else {
       // new item
       product.Qty = 1;
+      product.SelectedColorIndex = selectedColorIndex;
       cartList.push(product);
     }
     setLocalStorage("so-cart", cartList);
+  }
+
+  function colorSelectedHandler(colorIndex) {
+    selectedColorIndex = colorIndex;
   }
 </script>
 
@@ -109,7 +119,41 @@
     {/if}
   </p>
 
-  <p class="product__color">{product.Colors[0].ColorName}</p>
+  {#if product.Colors.length > 1}
+    <p class="product__color-preview">
+      <img
+        src={product.Colors[selectedColorIndex].ColorPreviewImageSrc}
+        alt="Item in {product.Colors[selectedColorIndex].ColorName}"
+      />
+    </p>
+
+    <p class="product__colors">
+      {#each product.Colors as color, colorIndex}
+        <!-- using code from https://svelte.dev/playground/ca01d7704d2e411bbe9a9911de6ea8bb?version=5.20.4 -->
+        <!-- comments generated via vscode -->
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <span
+          class="product__color {colorIndex === selectedColorIndex
+            ? 'selected'
+            : ''}"
+          onclick={() => {
+            colorSelectedHandler(colorIndex);
+          }}
+        >
+          <img width="40" src={color.ColorChipImageSrc} alt={color.ColorName} />
+          <span>
+            {color.ColorName}
+          </span>
+        </span>
+      {/each}
+    </p>
+  {:else}
+    <p>
+      {product.Colors[0].ColorName}
+    </p>
+  {/if}
+
   <!-- using code from https://svelte.dev/tutorial/svelte/html-tags -->
   <p class="product__description">{@html product.DescriptionHtmlSimple}</p>
 
@@ -136,5 +180,38 @@
 <style>
   #wishlistButton {
     margin-top: 10px;
+  }
+  .product__colors {
+    display: flex;
+    gap: 1px;
+    justify-content: space-around;
+  }
+  .product__colors img {
+    width: 40px;
+    box-shadow: #444 0px 0px 2px;
+  }
+  .product__color {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: smaller;
+    cursor: pointer;
+    border: 2px white solid;
+  }
+  .selected {
+    border: 2px var(--secondary-color) solid;
+    box-shadow: #444 0px 0px 2px;
+  }
+  .product__color-preview {
+    display: flex;
+    justify-content: space-around;
+  }
+  .product__color-preview img {
+    width: 160px;
+    /* border: 2px var(--primary-color) solid;
+    box-shadow: #444 0px 0px 2px; */
+    /* padding: 5px; */
   }
 </style>
