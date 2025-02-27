@@ -8,6 +8,7 @@
     removeFromWishlist,
     isInWishlist,
   } from "../utils.mjs";
+  import ImageCarousel from "./ImageCarousel.svelte";
 
   let { productId, colorIndex } = $props();
 
@@ -100,11 +101,20 @@
 {:then product}
   <h3>{product.Brand.Name}</h3>
   <h2 class="divider">{product.NameWithoutBrand}</h2>
-  <img
-    class="divider"
-    src={product.Images.PrimaryLarge}
-    alt={product.NameWithoutBrand}
-  />
+
+  <section class="divider">
+    <!-- using code from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing -->
+    {#if (product.Images.ExtraImages?.length ?? 0) > 0}
+      <ImageCarousel
+        images={[
+          { Title: "Main View", Src: product.Images.PrimaryExtraLarge },
+          ...product.Images.ExtraImages,
+        ]}
+      />
+    {:else}
+      <img src={product.Images.PrimaryLarge} alt={product.NameWithoutBrand} />
+    {/if}
+  </section>
 
   <p class="product-card__price">
     {#if discount}
