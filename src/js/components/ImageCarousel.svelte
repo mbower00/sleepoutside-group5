@@ -52,6 +52,7 @@
     box-shadow: #444 0px 0px 2px;
     padding: 5px;
     cursor: pointer;
+    background-color: white;
   }
   .navigator img {
     width: 40px;
