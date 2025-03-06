@@ -57,7 +57,7 @@ export function alertMessage(message, scroll = true) {
   // Remove alert after 3 seconds
   setTimeout(() => {
       alert.remove();
-  }, 3000);
+  }, 7000);
 }
 
 
