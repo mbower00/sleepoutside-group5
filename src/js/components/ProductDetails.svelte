@@ -56,6 +56,7 @@
       marginTop: "15px",
       borderRadius: "100%",
       boxShadow: "#333 2px 2px 5px",
+      zIndex: "10",
     };
 
     document.querySelector(".cart").animate(

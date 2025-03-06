@@ -1,18 +1,19 @@
 <script>
   import { getLocalStorage } from "../utils.mjs";
-  import {checkout} from "../externalServices.mjs"
+  import { alertMessage } from "../utils.mjs";
+  import { checkout } from "../externalServices.mjs";
   let { cartKey } = $props();
 
-  let fname = $state(""); 
-  let lname = $state(""); 
-  let street = $state("");
-  let city = $state("");
-  let state = $state("");
-  let zip = $state("");
+  let fname = $state("asdf");
+  let lname = $state("asdf");
+  let street = $state("asdf");
+  let city = $state("asdf");
+  let state = $state("asdf");
+  let zip = $state("12345");
   let cardNumber = $state("1234123412341234");
   let expiration = $state("6/52");
-  
-  let code = $state("123"); 
+
+  let code = $state("123");
   let cart = $state([]);
   let count = $state(0);
   let subtotal = $state(0);
@@ -22,7 +23,7 @@
 
   function zipCodeInputHandler(e) {
     if (`${zip}`.length === 5) {
-      calculateShippingTaxTotal()
+      calculateShippingTaxTotal();
     }
   }
 
@@ -34,15 +35,15 @@
 
   function calculateShippingTaxTotal() {
     // calculate shipping
-    shipping = 10 + (2 * (count - 1))
+    shipping = 10 + 2 * (count - 1);
     // calculate tax
     tax = `${(subtotal * 0.06).toFixed(2)}`;
     // calculate total
-    orderTotal = `${Number(subtotal) + Number(shipping) + Number(tax)}`
+    orderTotal = `${Number(subtotal) + Number(shipping) + Number(tax)}`;
   }
 
   function packageItems() {
-    return { 
+    return {
       orderDate: new Date().toISOString(),
       fname,
       lname,
@@ -58,28 +59,28 @@
           id: item.Id,
           name: item.Name,
           price: item.FinalPrice,
-          quantity: item.Qty
-        }
+          quantity: item.Qty,
+        };
       }),
       orderTotal,
       shipping,
       tax,
+    };
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const payload = packageItems();
+    try {
+      await checkout(payload);
+      // e.target.reset();
+    } catch (err) {
+      console.log(Object.values(err.message));
+      for (let i of Object.values(err.message)) {
+        alertMessage(i);
+      }
     }
   }
-
-  function handleSubmit(e) {
-    event.preventDefault();
-    const payload = packageItems()
-    checkout(payload)
-
-    // reset
-    subtotal = 0;
-    shipping = 0;
-    tax = 0;
-    orderTotal = 0;
-    event.target.reset();
-  }
-
 
   function init() {
     cart = getLocalStorage(cartKey);
@@ -95,12 +96,7 @@
   <fieldset>
     <legend>Shipping</legend>
     <label for="fname"> First Name </label>
-    <input
-      type="text"
-      id="fname"
-      name="fname"
-      bind:value={fname}
-    />
+    <input type="text" required id="fname" name="fname" bind:value={fname} />
 
     <label for="lname"> Last Name </label>
     <input type="text" required id="lname" name="lname" bind:value={lname} />
@@ -115,7 +111,16 @@
     <input type="text" required id="state" name="state" bind:value={state} />
 
     <label for="zip"> Zip </label>
-    <input type="text" required maxlength="5" id="zip" name="zip" bind:value={zip} onchange={zipCodeInputHandler} />
+    <input
+      type="text"
+      required
+      id="zip"
+      name="zip"
+      bind:value={zip}
+      maxlength="5"
+      pattern={"[0-9]{5}"}
+      onchange={zipCodeInputHandler}
+    />
   </fieldset>
 
   <!-- card info -->
@@ -126,6 +131,10 @@
       type="text"
       id="card-number"
       name="card-number"
+      required
+      minlength="16"
+      maxlength="16"
+      pattern={"[0-9]{16}"}
       bind:value={cardNumber}
     />
 
@@ -134,12 +143,19 @@
       type="text"
       id="expiration"
       name="expiration"
+      maxlength="5"
+      pattern={"([0-9]/[0-9]{2})|(0[0-9]/[0-9]{2})|(1[0-2]/[0-9]{2})"}
+      required
       bind:value={expiration}
     />
 
     <label for="code"> Security Code </label>
     <input
       type="text"
+      minlength="3"
+      maxlength="3"
+      pattern={"[0-9]{3}"}
+      required
       id="code"
       name="code"
       bind:value={code}
