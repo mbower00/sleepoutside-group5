@@ -1,32 +1,24 @@
 <script>
   import { getLocalStorage } from "../utils.mjs";
-
-  const baseURL = import.meta.env.VITE_SERVER_URL
-
-
+  import {checkout} from "../externalServices.mjs"
   let { cartKey } = $props();
 
-  let firstName = $state("");
-  let lastName = $state("");
+  let fname = $state(""); 
+  let lname = $state(""); 
   let street = $state("");
   let city = $state("");
   let state = $state("");
   let zip = $state("");
-  let cardNumber = $state("");
-  let expiration = $state("");
-  let securityCode = $state("");
-
+  let cardNumber = $state("1234123412341234");
+  let expiration = $state("6/52");
+  
+  let code = $state("123"); 
   let cart = $state([]);
   let count = $state(0);
   let subtotal = $state(0);
-  let estimate = $state(0);
+  let shipping = $state(0);
   let tax = $state(0);
-  let total = $state(0);
-
-  function submitForm(event) {
-    event.preventDefault();
-    event.target.reset();
-  }
+  let orderTotal = $state(0);
 
   function zipCodeInputHandler(e) {
     if (`${zip}`.length === 5) {
@@ -42,11 +34,50 @@
 
   function calculateShippingTaxTotal() {
     // calculate shipping
-    estimate = 10 + (2 * (count - 1))
+    shipping = 10 + (2 * (count - 1))
     // calculate tax
-    tax = (subtotal * 0.06).toFixed(2);
+    tax = `${(subtotal * 0.06).toFixed(2)}`;
     // calculate total
-    total = Number(subtotal) + Number(estimate) + Number(tax)
+    orderTotal = `${Number(subtotal) + Number(shipping) + Number(tax)}`
+  }
+
+  function packageItems() {
+    return { 
+      orderDate: new Date().toISOString(),
+      fname,
+      lname,
+      street,
+      city,
+      state,
+      zip,
+      cardNumber,
+      expiration,
+      code,
+      items: cart.map((item) => {
+        return {
+          id: item.Id,
+          name: item.Name,
+          price: item.FinalPrice,
+          quantity: item.Qty
+        }
+      }),
+      orderTotal,
+      shipping,
+      tax,
+    }
+  }
+
+  function handleSubmit(e) {
+    event.preventDefault();
+    const payload = packageItems()
+    checkout(payload)
+
+    // reset
+    subtotal = 0;
+    shipping = 0;
+    tax = 0;
+    orderTotal = 0;
+    event.target.reset();
   }
 
 
@@ -59,20 +90,20 @@
   init();
 </script>
 
-<form onsubmit={submitForm}>
+<form onsubmit={handleSubmit}>
   <!-- person info -->
   <fieldset>
     <legend>Shipping</legend>
-    <label for="first-name"> First Name </label>
+    <label for="fname"> First Name </label>
     <input
       type="text"
-      id="first-name"
-      name="first-name"
-      bind:value={firstName}
+      id="fname"
+      name="fname"
+      bind:value={fname}
     />
 
-    <label for="last-name"> Last Name </label>
-    <input type="text" required id="last-name" name="last-name" bind:value={lastName} />
+    <label for="lname"> Last Name </label>
+    <input type="text" required id="lname" name="lname" bind:value={lname} />
 
     <label for="street"> Street </label>
     <input type="text" required id="street" name="street" bind:value={street} />
@@ -106,12 +137,12 @@
       bind:value={expiration}
     />
 
-    <label for="security-code"> Security Code </label>
+    <label for="code"> Security Code </label>
     <input
       type="text"
-      id="security-code"
-      name="security-code"
-      bind:value={securityCode}
+      id="code"
+      name="code"
+      bind:value={code}
     />
   </fieldset>
 
@@ -121,13 +152,13 @@
     <p>
       Item Subtotal({count}) <span class="summary-number">${subtotal}</span>
     </p>
-    <p>Shipping Estimate <span class="summary-number">${estimate}</span></p>
+    <p>Shipping Estimate <span class="summary-number">${shipping}</span></p>
     <p>Tax <span class="summary-number">${tax}</span></p>
     <strong>
-      <p>Order Total <span class="summary-number">${total}</span></p>
+      <p>Order Total <span class="summary-number">${orderTotal}</span></p>
     </strong>
   </fieldset>
-  <button type="submit">Submit</button>
+  <button type="submit" id="submit-button">Submit</button>
 </form>
 
 <style>
@@ -146,5 +177,9 @@
 
   .summary-number {
     float: right;
+  }
+
+  #submit-button {
+    margin-top: 20px;
   }
 </style>
