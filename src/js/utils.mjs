@@ -37,6 +37,30 @@ export function updateCartNumber(){
   cartState.count = getCartNumber()
 }
 
+export function alertMessage(message, scroll = true) {
+  const alert = document.createElement("div");
+  alert.setAttribute("role", "alert");
+  alert.textContent = message;
+  alert.style.backgroundColor = "red";
+  alert.style.color = "white";
+  alert.style.padding = "10px";
+  alert.style.margin = "10px 0";
+  alert.style.textAlign = "center";
+
+  // Insert alert before the main element
+  const main = document.querySelector("main");
+  main.parentNode.insertBefore(alert, main);
+
+  // Scroll to the top if needed
+  if (scroll) window.scrollTo(0, 0);
+
+  // Remove alert after 3 seconds
+  setTimeout(() => {
+      alert.remove();
+  }, 3000);
+}
+
+
 
 export function renderHeaderFooter(){
 
