@@ -1,7 +1,7 @@
 // IMPORTANT: productDetails is depreciated... see ./components/ProductDetails.svelte
 
 
-// import { findProductById } from "./productData.mjs";
+// import { findProductById } from "./getProductsByCategory.mjs";
 // import { getLocalStorage, setLocalStorage, updateCartNumber, addToWishlist, removeFromWishlist, isInWishlist } from "./utils.mjs";
 
 // export default async function productDetails(productId, selector) {
