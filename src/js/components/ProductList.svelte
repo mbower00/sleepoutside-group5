@@ -1,5 +1,5 @@
 <script>
-  import { getData } from "../productData.mjs";
+  import { getProductsByCategory } from "../externalServices.mjs";
   import ProductSummary from "./ProductSummary.svelte";
 
   let { category } = $props();
@@ -11,8 +11,8 @@
   //   return products.filter((product) => neededTents.includes(product.Id));
   // }
 
-  // let promise = getData(category).then((products) => filterNeeded(products));
-  let promise = getData(category);
+  // let promise = getProductsByCategory(category).then((products) => filterNeeded(products));
+  let promise = getProductsByCategory(category);
 
   function formatCategory(category) {
     return category

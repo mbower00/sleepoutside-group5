@@ -1,6 +1,9 @@
 <script>
   import { getLocalStorage } from "../utils.mjs";
 
+  const baseURL = import.meta.env.VITE_SERVER_URL
+
+
   let { cartKey } = $props();
 
   let firstName = $state("");
